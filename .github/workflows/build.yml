@@ -1,0 +1,24 @@
+name: build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        qt: [qt5, qt6]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt 5
+        if: matrix.qt == 'qt5'
+        run: sudo apt-get update && sudo apt-get install -y qtbase5-dev cmake g++
+
+      - name: Install Qt 6
+        if: matrix.qt == 'qt6'
+        run: sudo apt-get update && sudo apt-get install -y qt6-base-dev cmake g++ libgl1-mesa-dev
+
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build
